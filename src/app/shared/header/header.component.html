@@ -1,0 +1,40 @@
+<nav class="h-20 p-5 px-5 sm:px-10 flex items-center gap-7 border-b border-secondaryBg">
+  <div class="flex gap-7 flex-1 items-center">
+    <hero-icon name="chat" hostDisplay="inlineBlock" type="solid"
+      class="w-10 h-10 fill-primaryBlue text-transparent"></hero-icon>
+    <h1 class="text-xl sm:text-3xl">{{ title }}</h1>
+  </div>
+  <div class="relative hidden sm:flex gap-1 items-center justify-center bg-teritiaryBg p-3 rounded-2xl">
+    <hero-icon name="search" hostDisplay="inlineBlock" type="outline" class="w-6 h-6 text-white"></hero-icon>
+    <input (keyup)="onSearch($event)" class="w-10 sm:w-24 md:w-60 text-gray-400 bg-inherit font-medium outline-none"
+      placeholder="Search" />
+    <div class="absolute pt-4 z-20 top-full">
+      <search-dropdown [profiles]="profiles" [loading]="timeoutId" (toggle)="handleSearchToggle($event)"
+        [isOpen]="isSearchOpen">
+      </search-dropdown>
+    </div>
+  </div>
+  <div [class]="'relative p-1 rounded-full hover:bg-secondaryBg flex-center transition-colors '
+   + (isNotificationsOpen ? 'hover:bg-primaryBg': '') ">
+    <hero-icon name="bell" hostDisplay="inlineBlock" type="outline"
+      class="cursor-pointer select-none w-8 h-8 text-white" (click)="onNotificationsClick()"></hero-icon>
+    <div
+      *ngIf="incomingRequests.length > 0"
+      class="absolute -right-0.5 select-none pointer-events-none -top-0.5 rounded-full h-4 w-4 flex-center bg-notification-background text-white font-medium text-xs">
+      {{ incomingRequests.length }}
+    </div>
+    <div class="absolute pt-4 z-40 top-full -right-20">
+      <app-notifications [incomingRequests]="incomingRequests" (toggle)="handleNotificationsToggle($event)"
+        [isOpen]="isNotificationsOpen"></app-notifications>
+    </div>
+  </div>
+  <div class="relative">
+    <div class="aspect-square h-12 bg-slate-300 rounded-full cursor-pointer
+     flex-center text-xl font-medium text-primaryBg" (click)="onAvatarClick()">
+      {{ profile | initials }}
+    </div>
+    <div class="absolute pt-4 z-40 top-full -right-1">
+      <app-dropdown (toggle)="handleToggle($event)" [isOpen]="isDropdownOpen"></app-dropdown>
+    </div>
+  </div>
+</nav>

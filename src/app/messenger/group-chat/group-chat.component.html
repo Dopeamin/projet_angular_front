@@ -1,0 +1,73 @@
+<app-modal [fixedHeight]="true" [onSubmit]="onSubmit" [isDisabled]="members.length < 2" [onClose]="onClose" [title]="'Create Group Chat'"
+    submitText="Create" [isVisible]="isVisible" [template]="greet"></app-modal>
+<ng-template #greet>
+    <div class="flex flex-col gap-4 pr-3">
+        <div class="flex flex-col gap-1">
+            <label for="name" class="text-sm text-primaryBlue">Name</label>
+            <input [(ngModel)]="name" placeholder="NYC 18/09" type="text" id="name"
+                class="border border-secondaryBg rounded-2xl px-4 py-3 w-full outline-none bg-secondaryBg ">
+        </div>
+        <div class="flex flex-col gap-1">
+            <label for="description" class="text-sm text-primaryBlue">Description</label>
+            <textarea placeholder="Night out plan with the friends." id="description" rows="2"
+                class="border border-secondaryBg resize-none scrollbar rounded-2xl px-4 py-3 w-full outline-none bg-secondaryBg"></textarea>
+        </div>
+        <div [class]="'flex flex-col gap-2 transition-all ' + (members.length ? '' : '-my-2 max-h-0 opacity-0')">
+            <label for="members" class="text-sm text-primaryBlue">Members</label>
+            <div class="flex gap-2 flex-wrap px-2">
+                <div *ngFor="let member of members" class="flex flex-col items-center gap-2 w-16">
+                    <div class="w-10 h-10 rounded-full bg-primaryBlue flex-center text-gray-800 relative">
+                        {{ member | initials }}
+                        <div (click)="toggleMember(member)"
+                            class="absolute transition-colors flex-center cursor-pointer p-px rounded-full hover:bg-slate-700/80 -top-2 -right-2">
+                            <hero-icon name="x" hostDisplay="inlineBlock" type="outline" class="w-5 h-5 text-white">
+                            </hero-icon>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <span class="text-sm text-primaryBlue line-clamp-1">{{member.firstName}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col gap-1">
+            <label for="members" class="text-sm text-primaryBlue">Add Members</label>
+            <!-- Search Bar -->
+            <div class="flex items-center gap-2 px-4 bg-secondaryBg rounded-2xl">
+                <hero-icon name="search" hostDisplay="inlineBlock" type="outline"
+                    class="w-5 h-5 text-primaryBlue"></hero-icon>
+                <input (keyup)="onSearchChange($event)" placeholder="Search..." type="text"
+                    class=" bg-inherit py-3 w-full outline-none ">
+            </div>
+            <div *ngIf="!timeoutId" class="flex flex-col gap-2 py-2">
+                <div (click)="toggleMember(member)" *ngFor="let member of friends" class="flex px-2 transition-colors
+                 items-center gap-4 py-2 rounded-2xl cursor-pointer hover:bg-secondaryBg">
+                    <div class="w-10 h-10 rounded-full bg-primaryBlue flex-center text-gray-800">
+                        {{ member | initials }}
+                    </div>
+                    <div class="flex flex-col gap-1 flex-1">
+                        <span class="text-sm text-primaryBlue">
+                            {{ member.firstName + ' ' + member.lastName }}
+                        </span>
+                    </div>
+                    <!-- Is Selected -->
+                    <div [class]="'flex-center w-6 h-6 rounded-full transition-colors ' +
+                        (member?.isSelected ? 'bg-primaryBlue hover:bg-primaryBlue/80' : 'bg-secondaryBg/50 hover:bg-secondaryBg/100')
+                    ">
+                        <hero-icon name="check" hostDisplay="inlineBlock" type="outline"
+                            class="w-4 h-4 text-white"></hero-icon>
+                    </div>
+                </div>
+                <!-- No Results -->
+                <div *ngIf="!friends.length" class="flex-center p-3">
+                    <span class="text-sm text-primaryBlue">No results found.</span>
+                </div>
+            </div>
+            <div *ngIf="timeoutId" class="flex-center p-5 gap-px">
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse"></div>
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-200"></div>
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-400"></div>
+            </div>
+        </div>
+    </div>
+</ng-template>

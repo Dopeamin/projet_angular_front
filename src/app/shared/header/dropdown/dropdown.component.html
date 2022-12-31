@@ -1,0 +1,28 @@
+<div
+  *ngIf="isOpen"
+  class="fixed left-0 top-0 w-screen z-100 h-screen"
+  (click)="onClick()"
+></div>
+<div
+  [class]="
+    'relative z-21 w-fit h-fit overflow-y-hidden transition-all ease-in-out duration-300 rounded-xl shadow-xl ' +
+    (isOpen ? 'max-h-56' : 'max-h-0')
+  "
+>
+  <div class="w-48 h-fit p-3 rounded-xl bg-secondaryBg/80 backdrop-blur-lg flex flex-col gap-2 ">
+    <a
+      [routerLink]="item.route"
+      (click)="item.onClick?.()"
+      class="w-full flex flex-row gap-4 rounded-xl items-center transition-all hover:bg-fadedBlue cursor-pointer px-3 py-1"
+      *ngFor="let item of dropDownItems"
+    >
+      <hero-icon
+        [name]="item.icon"
+        hostDisplay="inlineBlock"
+        type="solid"
+        [class]="'w-4 h-4 fill-white transition-all duration-500 ease-out '"
+      ></hero-icon>
+      <p>{{ item.title }}</p>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+<div #chatHead [ngClass]="{
+    'w-full flex text-sm md:text-base gap-2 items-end relative': true,
+    'flex-row-reverse': right
+}">
+    <div *ngIf="!right" class="h-9 aspect-square text-gray-600 rounded-full flex-center bg-slate-300" [ngClass]="{
+        'mb-4': (messages[0].seen | keyvalue).length
+    }">
+        {{ messages[0].profile | initials }}
+    </div>
+    <div class="w-full flex flex-col-reverse gap-0.5" [ngClass]="{'items-end': right}">
+        <div class="w-full" *ngFor="let message of messages; let index = index; let first = first; let last = last">
+            <div [ngClass]="{
+                'bg-secondaryBg group relative max-w-[60%] lg:max-w-[50%] min-h-[2.25rem] w-fit flex items-center py-2 px-4 rounded-md break-all': true,
+                'bg-secondaryBg rounded-r-3xl': !right,
+                'bg-fadedBlue rounded-l-3xl ml-auto': right,
+                'rounded-tl-3xl': last && !right,
+                'rounded-bl-3xl': first && !right,
+                'rounded-tr-3xl': last && right,
+                'rounded-br-3xl': first && right,
+                'latest' : first,
+                'bg-transparent px-0 py-0 lg:max-w-2xl': !message.data.text && message.data.attachments?.length,
+                'bg-gray-600': !(message.data.text || message.data.attachments?.length)
+            }">
+                <div class="absolute h-9 p-2 px-4 rounded-2xl text-gray-800 opacity-0 transition-opacity
+                text-xs flex-center bg-slate-400 group-hover:opacity-100 group-hover:delay-300" [ngClass]="{
+                    '-left-20': right,
+                    '-right-20': !right
+                }" *ngIf="!message.isSending  && (message.data.text || message.data.attachments?.length)">
+                    {{ message.createdAt | date: 'shortTime' }}
+                </div>
+
+                <!-- Message options (delete) -->
+                <div class="absolute h-9 p-2 rounded-2xl text-white opacity-0 transition-all
+                text-xs flex-center cursor-pointer group-hover:opacity-100 group-hover:delay-300 hover:text-red-500"
+                    [ngClass]="{
+                    '-left-28': right,
+                    '-right-28': !right
+                }" *ngIf="!message.isSending && (message.data.text || message.data.attachments?.length) && right">
+                    <button (click)="deleteMessage(message)" class="w-5 h-5 flex-center rounded-full ">
+                        <hero-icon name="trash" class="w-5 h-5"></hero-icon>
+                    </button>
+                </div>
+                <!-- No messages or text -->
+                <p *ngIf="!(message.data.text || message.data.attachments?.length)">
+                    This message was deleted.
+                </p>
+
+                <p *ngIf="message.data.text">
+                    {{ message.data.text }}
+                </p>
+                <div [ngClass]="{
+                    'flex flex-wrap gap-1 max-w-[536px] w-fit overflow-x-hidden' : true,
+                    'rounded-r-3xl': !right,
+                    'rounded-l-3xl ml-auto': right,
+                    'rounded-tl-3xl': last && !right,
+                    'rounded-bl-3xl': first && !right,
+                    'rounded-tr-3xl': last && right,
+                    'rounded-br-3xl': first && right,
+                    'justify-start': !right,
+                    'justify-end': right
+                }">
+                    <div *ngFor="let attachment of message.data.attachments">
+                        <img *ngIf="attachment.type.includes('image')" [src]="attachment.url | safeResourceUrl"
+                            (error)="attachment.url = '/assets/images/placeholder.jpg'" [class]="' rounded object-cover cursor-pointer ' + 
+                            (message.data.attachments.length > 1 ? 'w-44 h-32' : 'w-full max-h-96 max-w-md')
+                            ">
+                        <video *ngIf="attachment.type.includes('video')" [src]="attachment.url | safeResourceUrl"
+                            [class]="' rounded object-cover cursor-pointer ' + 
+                            (message.data.attachments.length > 1 ? 'w-44 h-32' : 'w-full max-h-96 max-w-md')
+                            " controls>
+                        </video>
+                        <audio *ngIf="attachment.type.includes('audio')" [src]="attachment.url | safeResourceUrl"
+                            class='rounded object-cover cursor-pointer h-10' controls>
+                        </audio>
+
+                        <!-- Any other type is an attachement file that can be downloaded -->
+                        <a *ngIf="!attachment.type.includes('image') && !attachment.type.includes('video') && !attachment.type.includes('audio')"
+                            [href]="attachment.url | safeResourceUrl" download="{{ attachment.url.split('-').at(-1) }}"
+                            class="flex p-4 py-1 h-full rounded bg-secondaryBg items-center gap-1">
+                            <hero-icon name="document" class="w-8 h-8"></hero-icon>
+                            <p class="text-xs">{{ attachment.url.split('-').at(-1) }}</p>
+                            <!-- download icon -->
+                            <hero-icon name="download" class="w-5 h-5"></hero-icon>
+                        </a>
+                    </div>
+                </div>
+                <div *ngIf="message.isSending"
+                    class="absolute bottom-0 -right-4 w-3 h-3 rounded-full border border-slate-300">
+
+                </div>
+            </div>
+
+            <div class="w-full flex flex-row-reverse mt-px gap-px select-none">
+                <div *ngFor="let profile of message.seen | keyvalue"
+                    class="w-3.5 h-3.5 text-[8.5px] flex-center text-black rounded-full bg-slate-300">
+                    {{ profiles[profile.key] && (profiles[profile.key] | initials) }}
+                </div>
+            </div>
+        </div>
+        <p *ngIf="!right" class="text-sm text-gray-300 ml-4">
+            {{ groupToProfile?.nickname || messages[0].profile.firstName }}
+        </p>
+    </div>
+</div>

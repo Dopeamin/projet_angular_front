@@ -1,0 +1,28 @@
+<a routerLink="/messenger/{{ chat?.id }}" [routerLinkActive]="['bg-gray-700']"
+    class="p-3 transition-colors w-min md:w-full flex items-center md:gap-5 rounded-2xl cursor-pointer hover:bg-gray-700">
+    <div class="rounded-lg flex-center text-xl text-primaryBg font-medium bg-slate-400 min-w-[2.75rem] w-11 h-11">
+        {{ (chat | chatProfiles)[0] | initials }}
+    </div>
+    <div class="hidden md:flex flex-col gap-1 overflow-hidden">
+        <h3 class="text-lg line-clamp-1">{{ chat | chatName}}</h3>
+        <div *ngIf="chat.lastMessage?.id" class="text-sm flex" [ngClass]="{
+                'text-white font-medium' : !chat?.lastMessage?.seenByMe,
+                'text-gray-400': chat?.lastMessage?.seenByMe
+            }">
+            <p class="line-clamp-1 break-all">
+                {{ lastMessageName }}
+            </p>
+            <div class="line-clamp-1 break-all max-w-[25%] sm:max-w-[45%] mr-1">
+                : {{
+                chat?.lastMessage?.data?.text ||
+                (chat?.lastMessage?.data?.attachments?.length ?
+                'sent an attachment' :
+                'deleted this message')
+                }}
+            </div>
+            <span class="line-clamp-1">
+                • {{ chat?.lastMessage?.createdAt | elapsedTime }}
+            </span>
+        </div>
+    </div>
+</a>

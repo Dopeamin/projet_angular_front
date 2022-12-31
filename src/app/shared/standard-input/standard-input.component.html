@@ -1,0 +1,22 @@
+<div class="input-container relative">
+  <span class="placeholder text-sm text-fadedGray absolute w-max-content font-normal leading-4 pl-6 pt-3">
+    {{ label }}
+  </span>
+
+  <input class="bg-teritiaryBg h-16 rounded-2xl outline-none text-sm font-semibold pl-6 pt-4 text-white lg:w-full
+    md:w-64" [type]="type" [value]="value" (input)="onChange($event)" />
+
+  <div class="flex w-max text-red-400 ">
+    <label class="text-xs absolute -bottom-4 left-1" *ngIf="formElement &&
+      formElement.errors?.['required'] && formElement.dirty">* this field is required</label>
+    <label class="text-xs absolute -bottom-4 left-1" *ngIf="formElement &&
+      formElement.errors?.['email'] && formElement.dirty">* please enter a valid email</label>
+    <label class="text-xs absolute -bottom-4 left-1" *ngIf="formElement &&
+     (formElement.errors?.['minlength'] || formElement.errors?.['pattern']) && formElement.dirty">
+      * must contain at least 1 lowercase, 1 uppercase, 1 number and 8 characters
+    </label>
+    <label class="text-xs absolute box w-500px -bottom-4 left-1" *ngIf="formElement &&
+      formElement.errors?.['MustMatch'] && formElement.dirty">* passwords do not match</label>
+  </div>
+
+</div>

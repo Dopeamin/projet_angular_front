@@ -1,0 +1,27 @@
+<div class="w-full overflow-x-hidden h-full min-h-screen">
+  <messenger-header [title]="'Profile'"></messenger-header>
+  <div class="flex relative">
+    <app-cover [profile]="profile" [me]="me"></app-cover>
+  </div>
+  <div class="w-full flex flex-row gap-4 max-w-4xl mx-auto mt-48">
+    <div class="flex max-w-xs w-full">
+      <div class="bg-fadedBlue w-full p-6 rounded-xl shadow-md h-fit">
+        <p class="text-lg font-semibold mb-5">Friends</p>
+        <div class="flex justify gap-2 flex-wrap">
+          <div *ngFor="let profile of friends" class="w-12 h-12 flex-center bg-blue-500 rounded-full">
+            {{ profile | initials}}
+          </div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
+          <div class="w-12 h-12 bg-blue-600 rounded-full animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1">
+      <app-post></app-post>
+    </div>
+  </div>
+</div>

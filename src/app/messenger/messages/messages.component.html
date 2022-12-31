@@ -1,0 +1,102 @@
+<section class="pb-5 border-r border-secondaryBg flex scrollable-container">
+    <div class="flex flex-col flex-1 relative">
+        <div
+            class="flex absolute z-10 left-0 top-0 bg-primaryBg/80 backdrop-blur-lg p-6 py-4 items-center justify-between text-xl font-medium w-full shadow-md">
+            <h1 [ngClass]="{
+                'bg-gray-400 text-gray-400 animate-pulse w-44 rounded': !chat
+            }">{{ (chat | chatName) || '*'}}</h1>
+            <div
+                class="hidden lg:flex items-center justify-center p-1 transition-colors cursor-pointer hover:bg-secondaryBg rounded-full">
+                <hero-icon (click)="toggleSettings()" name="information-circle" type="outline"
+                    class="w-8 h-8 text-primaryBlue">
+                </hero-icon>
+            </div>
+        </div>
+        <div #messagesContainer infiniteScroll [threshold]="100" (onReachedEnd)="getMessages()"
+            class="flex flex-col-reverse gap-5 p-7 overflow-y-auto flex-1 scrollbar">
+            <chat-head *ngFor="let block of messages; let first = first" [messages]="block" [shouldMarkAsSeen]="first"
+                [chat]="chat"></chat-head>
+
+            <!-- Loader  -->
+            <div *ngIf="(!chat || chat.hasMore) && loading" class="flex items-center gap-2 justify-center">
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse"></div>
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-200"></div>
+                <div class="w-4 h-4 bg-primaryBlue rounded-full animate-pulse animation-delay-400"></div>
+            </div>
+
+            <!-- End of discussion -->
+            <div *ngIf="chat && !chat.hasMore" class="flex items-center gap-2 justify-center pb-28">
+                <hero-icon name="check-circle" type="outline" class="w-5 h-5 text-primaryBlue"></hero-icon>
+                <span class="text-primaryBlue">No more messages</span>
+            </div>
+
+            <!-- Chat name and Photo Section -->
+            <div *ngIf="chat && !chat.hasMore" class="flex-center flex-col gap-5 mt-24">
+                <div class="w-20 h-20 text-3xl text-medium rounded-full bg-slate-400 text-gray-800 flex-center">
+                    {{ chat?.groupChatToProfiles[0]?.profile | initials }}
+                </div>
+                <div class="flex flex-col gap-2 items-center line-clamp-1">
+                    <h1 class="text-xl font-medium">{{ chat | chatName }}</h1>
+                </div>
+            </div>
+
+        </div>
+        <chat-input></chat-input>
+    </div>
+    <div *ngIf="settings && chat"
+        class="max-w-sm hidden lg:flex flex-1 h-full p-7 pb-0 flex-col border-l border-secondaryBg">
+        <!-- Chat name and Photo Section -->
+        <div class="flex-center flex-col gap-5">
+            <div class="w-20 h-20 text-3xl text-medium rounded-full bg-slate-400 text-gray-800 flex-center">
+                {{ (chat | chatProfiles)[0] | initials }}
+            </div>
+            <div class="flex flex-col gap-2 items-center line-clamp-1">
+                <!-- Input to change chat name -->
+                <form *ngIf="!chat.isPrivate" #chatNameForm="ngForm" class="flex items-center justify-between"
+                    (ngSubmit)="chatNameForm.form.valid && updateChatName()">
+                    <input id="chatName" [(ngModel)]="chatName" name="chatName" class="text-xl text-primaryBlue outline-none bg-inherit pb-1
+                     focus:placeholder:text-primaryBlue/40 placeholder:text-primaryBlue"
+                        placeholder="{{ chat | chatName }}">
+                    <label for="chatName">
+                        <hero-icon name="pencil" type="outline"
+                            class="cursor-pointer w-6 h-6 text-primaryBlue"></hero-icon>
+                    </label>
+                </form>
+                <h1 *ngIf="chat.isPrivate" class="text-xl font-medium">{{ chat | chatName }}</h1>
+            </div>
+        </div>
+
+        <!-- Breaking Line -->
+        <div class="w-full h-px bg-secondaryBg my-5 mb-3"></div>
+
+        <div class="flex-1 flex flex-col gap-3 py-5">
+            <h1 class="flex items-center gap-5 text-lg mb-5">
+                <hero-icon name="user" type="outline" class="w-6 h-6"></hero-icon>
+                Chat Members
+            </h1>
+            <div *ngFor="let member of chat?.groupChatToProfiles" class="flex items-center gap-5">
+                <div class="w-10 h-10 rounded-full bg-slate-400 text-gray-800 flex-center">
+                    {{ member.profile | initials}}
+                </div>
+                <div>
+                    <form #nicknameForm="ngForm" (ngSubmit)="nicknameForm.form.valid && updateNickname(member.id)"
+                        class="flex items-center justify-between">
+                        <input [(ngModel)]="nickname[member.id]" name="nickname" [id]="member.id"
+                            class="text-primaryBlue outline-none bg-inherit pb-1
+                            focus:placeholder:no-underline focus:placeholder:text-primaryBlue/40 placeholder:text-primaryBlue placeholder:underline" [placeholder]="'Set Nickname'">
+                        <label [for]="member.id">
+                            <hero-icon name="pencil" type="outline"
+                                class="cursor-pointer w-4 h-4 text-primaryBlue"></hero-icon>
+                        </label>
+                    </form>
+                    <p class="text-sm font-thin opacity-80">{{member.profile.firstName}} {{member.profile.lastName}}</p>
+                </div>
+            </div>
+        </div>
+        <button
+            class="mx-auto p-4 rounded-lg w-full flex-center text-red-600 font-medium gap-2 transition-colors hover:bg-secondaryBg">
+            <hero-icon name="trash" type="outline" class="w-5 h-5"></hero-icon>
+            Delete Conversation
+        </button>
+    </div>
+</section>

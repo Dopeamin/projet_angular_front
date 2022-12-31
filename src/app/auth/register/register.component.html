@@ -1,0 +1,48 @@
+<div
+  class="main-container bg-primary overflow-y-auto flex flex-col justify-center h-screen bg-no-repeat bg-right text-white">
+  <div class="sub-container flex items-start flex-col gap-7 lg:pl-24 pl-12">
+    <h3 class="label font-medium text-2xl">Start for free</h3>
+    <div class="flex gap-0 text-4xl lg:text-7xl">
+      <h1 class="title font-bold ">Create new account</h1>
+      <h1 class="title point font-bold text-primaryBlue">.</h1>
+    </div>
+    <h4 class="sub-note font-normal text-base">
+      Already has an account ? Login <a class="text-primaryBlue" [routerLink]="'/login'">here</a>
+    </h4>
+    <form class="flex flex-col gap-5 w-1/3" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <div class="flex gap-4 flex-col lg:flex-row">
+        <div class="w-full">
+          <app-standard-input [type]="'text'" label='First Name' [formElement]="formElement('firstName')"
+            formControlName="firstName"></app-standard-input>
+        </div>
+        <div class="w-full">
+          <app-standard-input [type]="'text'" label='Last Name' formControlName="lastName"
+            [formElement]="formElement('lastName')"></app-standard-input>
+        </div>
+      </div>
+      <div>
+        <app-standard-input [type]="'text'" label='Email' formControlName="email"
+          [formElement]="formElement('email')"></app-standard-input>
+      </div>
+      <div>
+        <app-standard-input [type]="'password'" label="Password" formControlName="password"
+          [formElement]="formElement('password')"></app-standard-input>
+      </div>
+      <div>
+        <app-standard-input [type]="'password'" label='Confirm Password' formControlName="confirmPassword"
+          [formElement]="formElement('confirmPassword')"></app-standard-input>
+      </div>
+      <!-- Submit Errors section -->
+      <div *ngIf="errorMessage" class="flex flex-col gap-2">
+        <div class="flex gap-2 items-center">
+          <hero-icon name="exclamation-circle" size="sm" class="text-red-400"></hero-icon>
+          <p class="text-sm text-red-400">
+            {{ errorMessage }}
+          </p>
+        </div>
+      </div>
+
+      <app-button type="primary" text="Create Account"></app-button>
+    </form>
+  </div>
+</div>

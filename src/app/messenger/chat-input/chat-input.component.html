@@ -1,0 +1,43 @@
+<form (submit)="sendMessage()" class="flex gap-3 sm:gap-5 pt-5 px-5 items-center">
+    <label for="file-input"
+        class="flex items-center p-1.5 cursor-pointer  transition-colors rounded-full hover:bg-secondaryBg">
+        <hero-icon name="paper-clip" type="outline" class="w-6 h-6 text-primaryBlue ">
+        </hero-icon>
+        <input multiple (change)="addFiles($event)" type="file" id="file-input" class="hidden">
+    </label>
+
+    <div class="w-full p-3 px-5 bg-secondaryBg rounded-2xl flex gap-2 flex-wrap">
+        <div *ngFor="let file of files; let index = index" class="relative w-8 h-6 sm:w-14 sm:h-10 select-none">
+            <img *ngIf="file.type.includes('image')" [src]="file.src | safeResourceUrl"
+                class="w-full h-full rounded object-cover">
+
+            <div *ngIf="file.type.includes('video')"
+                class="w-full h-full rounded bg-gray-600 flex-center relative">
+                <!-- auto play -->
+                <video [src]="file.src | safeResourceUrl" class="w-full h-full rounded object-cover" autoplay loop
+                    muted>
+                </video>
+            </div>
+
+            <!-- File -->
+            <div *ngIf="!file.type.includes('image') && !file.type.includes('video')"
+                class="w-full h-full rounded bg-gray-600 flex-center relative">
+                <hero-icon name="document" type="outline" class="w-6 h-6 text-white">
+                </hero-icon>
+            </div>
+
+            <div (click)="removeFile(index)"
+                class="absolute -top-1 -right-1 cursor-pointer bg-gray-600 hover:bg-gray-500 transition-colors flex-center p-px rounded-full">
+                <hero-icon name="x" type="outline" class="w-4 h-4 text-white">
+                </hero-icon>
+            </div>
+        </div>
+        <input (paste)="onPaste($event)" autocomplete="off" name="message" [(ngModel)]="message"
+            class="w-full bg-secondaryBg outline-none" placeholder="Aa">
+    </div>
+    <div class="flex items-center p-1.5 cursor-pointer  transition-colors rounded-full hover:bg-secondaryBg">
+        <hero-icon (click)="sendMessage()" name="paper-airplane" type="outline"
+            class="w-6 h-6 text-primaryBlue rotate-90">
+        </hero-icon>
+    </div>
+</form>

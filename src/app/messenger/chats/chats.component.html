@@ -1,0 +1,39 @@
+<div [class]="'flex-center transition-all max-w-xs min-w-min absolute sm:relative z-20 top-0 left-0 bg-primaryBg/80 backdrop-blur-lg' + 
+       (isOpen ? '': ' -translate-x-full sm:translate-x-0')">
+    <section
+        class='p-7 px-1 md:px-4 pb-5 border-r max-w-xs transition-all lg:max-w-sm md:w-96 border-secondaryBg flex flex-col scrollable-container gap-2'>
+        <div class="flex justify-between items-center gap-1 px-1 pb-2">
+            <h1 class="text-xl">Chats</h1>
+            <div (click)="isGroupChatModalVisible = true"
+                class="p-1.5 hover:bg-slate-700 transition-colors flex-center rounded-full cursor-pointer">
+                <hero-icon name="plus" hostDisplay="inlineBlock" type="outline"
+                    class="w-5 h-5 text-primaryBlue"></hero-icon>
+            </div>
+        </div>
+        <div *ngIf="chats.length > 0" infiniteScroll (onReachedEnd)="chatService.getNextChats()"
+            class="flex flex-col items-center gap-5 -mr-4 pr-4 my-0  overflow-y-auto flex-1 scrollbar">
+            <chat-item class="w-full flex-center" *ngFor="let chat of chats" [chat]="chat"></chat-item>
+            <chat-item-skeleton *ngFor="let i of ' '.repeat(chatService?.loadingChats ? 2 : 0).split('')" class="w-full">
+            </chat-item-skeleton>
+        </div>
+
+        <!-- No chats -->
+        <div *ngIf="chats.length === 0" class="flex-center flex-col gap-5 p-7 flex-1">
+            <hero-icon name="chat" hostDisplay="inlineBlock" type="outline" class="w-20 h-20"></hero-icon>
+            <h1 class="text-xl font-medium">No chats yet</h1>
+            <p class="text-center text-slate-200">Start a conversation with your friends and family</p>
+        </div>
+
+        <button
+            class="hidden md:block w-full py-4 rounded-2xl bg-fadedBlue text-slate-200 transition-colors hover:bg-fadedBlue/40">
+            Send Feedback
+        </button>
+    </section>
+    <div (click)="toggleChatList()" [class]="'absolute cursor-pointer transition-all select-none hover:bg-secondaryBg sm:hidden  top-20 rounded-full bg-primaryBg  border border-secondaryBg flex-center p-1 '+
+        (isOpen ? '-right-4': 'rotate-180 -right-8')
+        ">
+        <hero-icon name="chevron-left" hostDisplay="inlineBlock" type="outline" class="w-5 h-5">
+        </hero-icon>
+    </div>
+</div>
+<group-chat-modal [onClose]="closeGroupChatModal" [isVisible]="isGroupChatModalVisible"></group-chat-modal>

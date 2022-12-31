@@ -1,0 +1,53 @@
+<div *ngIf="isOpen" class="fixed left-0 top-0 w-screen z-100 h-screen" (click)="onClick()"></div>
+<div [class]="
+    'relative z-20 w-fit overflow-y-hidden transition-all ease-in-out duration-300 shadow-xl rounded-xl ' +
+    (isOpen ? 'h-96' : 'h-0')
+  ">
+    <div class="w-80 scrollbar overflow-y-scroll h-full p-2 rounded-xl bg-secondaryBg/80 backdrop-blur-lg flex flex-col gap-2">
+        <h1 class="px-4 pt-2 font-bold text-xl">Notifications</h1>
+
+        <!-- Friend Requests Section -->
+        <div *ngIf="incomingRequests.length"
+            class="pl-4 pr-2 font-medium text-lg flex items-center justify-between gap-2 -mb-2">
+            <h2 class="w-max">Friend Requests</h2>
+            <p class="text-sm text-primaryBlue cursor-pointer select-none hover:underline">See All</p>
+        </div>
+        <div [routerLink]="['/profile', request?.sender?.id]"
+            class="w-full text-slate-100 text-sm flex flex-col gap-2 rounded-xl transition-all hover:bg-fadedBlue cursor-pointer px-4 py-2"
+            *ngFor="let request of incomingRequests">
+            <div>
+                <strong>
+                    {{ request?.sender?.firstName + ' ' + request?.sender?.lastName }}
+                </strong>
+                has sent you a friend request.
+            </div>
+            <div class="text-primaryBlue flex">
+                <p>
+                    {{ request?.createdAt | elapsedTime : 'long' }}
+                </p>
+                <div (click)="$event.stopPropagation()" class="flex gap-2 ml-auto">
+                    <p class="cursor-pointer select-none hover:underline" (click)="acceptRequest(request.sender)">
+                        Accept
+                    </p>
+                    <p class="cursor-pointer select-none hover:underline text-gray-400"
+                        (click)="declineRequest(request.sender.id)">
+                        Decline
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- End Friend Requests -->
+
+        <!-- No notifications section -->
+        <div *ngIf="!incomingRequests.length" [class]="'flex-center flex-col gap-2 h-full select-none transition-opacity duration-100 marker:-translate-y-7' 
+        + (isOpen ? ' delay-75' : ' opacity-0')
+        ">
+            <!-- <img src="assets/images/empty-notifications.svg" alt="No notifications" class="w-32"> -->
+            <hero-icon name="bell" type="outline" class="w-32 h-32 text-slate-100"></hero-icon>
+            <p class="text-center text-slate-100">
+                You have no notifications yet.
+            </p>
+        </div>
+
+    </div>
+</div>
